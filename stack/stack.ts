@@ -4,7 +4,7 @@ import {CodeProps} from "@hexlabs/kloudformation-ts/dist/aws/lambda/function/Cod
 import {AWS} from "@hexlabs/kloudformation-ts/dist/kloudformation/aws";
 import {Api} from "@hexlabs/kloudformation-ts/dist/kloudformation/modules/api";
 import {Lambda} from "@hexlabs/kloudformation-ts/dist/kloudformation/modules/lambda";
-import apiPaths from '../generated/template-api/paths.json';
+import apiPaths from '../generated/template-service-api/paths.json';
 
 type StackEnvs = {
   ENVIRONMENT: string;
