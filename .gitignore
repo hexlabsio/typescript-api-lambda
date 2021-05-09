@@ -1,0 +1,9 @@
+.idea
+node_modules
+dist
+coverage
+junit.xml
+template.yml
+template.json
+generated
+.husky

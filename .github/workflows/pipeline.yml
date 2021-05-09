@@ -1,0 +1,113 @@
+name: Pipeline
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - master
+  release:
+    types: [ published ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.0.0
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Production Build
+        run: npm run build
+
+      - name: Test
+        run: npm test
+
+      - name: Upload Distribution
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: dist/
+      - name: Upload Generated
+        uses: actions/upload-artifact@v2
+        with:
+          name: generated
+          path: generated/
+  deploy-dev:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 14.x ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.0.0
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install
+        run: npm ci && npm install -g @hexlabs/kloudformation-ts
+
+      - uses: actions/download-artifact@v2
+
+      - name: Deploy Stack
+        run: |
+          kloudformation deploy \
+          -f $(pwd)/dist \
+          -b hexlabs-deployments \
+          -p klouds-accounts-$ENVIRONMENT \
+          klouds-accounts-$ENVIRONMENT \
+          /$(pwd)/stack/stack.ts
+        env:
+          ENVIRONMENT: dev
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  deploy-prod:
+    if: github.event.action == 'published'
+    needs: deploy-dev
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 14.x ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.0.0
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install
+        run: npm ci && npm install -g @hexlabs/kloudformation-ts
+
+      - uses: actions/download-artifact@v2
+
+      - name: Deploy Stack
+        run: |
+          kloudformation deploy \
+          -f $(pwd)/dist \
+          -b hexlabs-deployments \
+          -p klouds-accounts-$ENVIRONMENT \
+          klouds-accounts-$ENVIRONMENT \
+          /$(pwd)/stack/stack.ts
+        env:
+          ENVIRONMENT: prod
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

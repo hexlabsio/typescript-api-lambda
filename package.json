@@ -1,0 +1,96 @@
+{
+  "name": "typescript-api-lambda-template",
+  "version": "0.1.0",
+  "main": "dist/bundle.js",
+  "scripts": {
+    "prepare": "husky install",
+    "test": "jest --ci --runInBand --coverage --reporters=default --reporters=jest-junit",
+    "lint": "eslint **/*.ts",
+    "start": ". stack/local.env.sh && kloudformation run -- $(pwd)/stack/stack.ts handler $(pwd)/src/index.ts",
+    "prebuild": "schema-api-ts generate $(pwd)/src/schema.ts",
+    "build": "webpack",
+    "stack": "kloudformation translate -s klouds-users-dev klouds-keys-dev -- $(pwd)/stack/stack.ts"
+  },
+  "eslintIgnore": [
+    "webpack.config.js"
+  ],
+  "eslintConfig": {
+    "extends": [
+      "eslint:recommended",
+      "plugin:jest/recommended",
+      "plugin:@typescript-eslint/recommended"
+    ],
+    "env": {
+      "node": true,
+      "es6": true,
+      "jest/globals": true
+    },
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "ecmaVersion": 2019,
+      "sourceType": "module"
+    },
+    "plugins": [
+      "@typescript-eslint/eslint-plugin",
+      "jest"
+    ],
+    "rules": {
+      "jest/expect-expect": 0,
+      "@typescript-eslint/no-explicit-any": 0,
+      "@typescript-eslint/no-non-null-assertion": 0,
+      "@typescript-eslint/no-empty-function": 0,
+      "@typescript-eslint/explicit-function-return-type": 0
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hexlabsio/typescript-lambda-template.git"
+  },
+  "author": "hexlabs",
+  "bugs": {
+    "url": "https://github.com/hexlabsio/typescript-lambda-template/issues"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
+  },
+  "jest": {
+    "transform": {
+      ".(ts)": "ts-jest"
+    },
+    "testRegex": "\\.spec\\.(ts|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ]
+  },
+  "homepage": "https://github.com/hexlabsio/typescript-api-lambda#readme",
+  "devDependencies": {
+    "@hexlabs/apigateway-ts": "^1.1.11",
+    "@hexlabs/env-vars-ts": "^0.1.2",
+    "@hexlabs/kloudformation-ts": "^1.1.149",
+    "@hexlabs/schema-api-ts": "^1.1.6",
+    "@types/aws-lambda": "^8.10.39",
+    "@types/jest": "^26.0.23",
+    "@types/node": "^15.0.2",
+    "@typescript-eslint/eslint-plugin": "^2.10.0",
+    "@typescript-eslint/parser": "^2.10.0",
+    "aws-sdk": "^2.592.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-jest": "^23.1.1",
+    "husky": "^6.0.0",
+    "jest": "^26.5.0",
+    "jest-junit": "^12.0.0",
+    "json-loader": "^0.5.7",
+    "node-loader": "^0.6.0",
+    "ts-jest": "^26.5.6",
+    "ts-loader": "^6.2.1",
+    "typescript": "^4.2.4",
+    "webpack": "^4.41.3",
+    "webpack-cli": "^3.3.10"
+  },
+  "dependencies": {
+    "@hexlabs/lambda-api-ts": "^0.1.7"
+  }
+}
