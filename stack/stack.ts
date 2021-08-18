@@ -1,4 +1,4 @@
-import Environment from "@hexlabs/env-vars-ts";
+import {defineEnvironmentFromProcess} from "@hexlabs/env-vars-ts";
 import {Template} from "@hexlabs/kloudformation-ts";
 import {Table} from "@hexlabs/kloudformation-ts/dist/aws/dynamodb/Table";
 import {CodeProps} from "@hexlabs/kloudformation-ts/dist/aws/lambda/function/CodeProps";
@@ -9,15 +9,7 @@ import {Lambda} from "@hexlabs/kloudformation-ts/dist/kloudformation/modules/lam
 import apiPaths from '../generated/template-service-api/paths.json';
 import * as tables from '../src/tables';
 
-type StackEnvs = {
-  ENVIRONMENT: string;
-}
-
-const environment = Environment.fromProcess<StackEnvs>({
-  requiredDefaults: {
-    ENVIRONMENT: 'dev',
-  }
-}).environment;
+const {environment} = defineEnvironmentFromProcess(['ENVIRONMENT'] as const, [], {ENVIRONMENT: 'dev'});
 
 const domain = 'klouds.io';
 const envName = environment.ENVIRONMENT;
