@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "main": "dist/bundle.js",
   "scripts": {
-    "prepare": "husky install",
+    "prepare": "rm -rf .husky && husky install",
     "test": "jest --ci --runInBand --coverage --reporters=default --reporters=jest-junit --passWithNoTests",
     "lint": "eslint **/*.ts",
     "start": ". stack/local.env.sh && kloudformation run -- $(pwd)/stack/stack.ts handler $(pwd)/src/index.ts",
