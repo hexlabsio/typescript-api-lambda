@@ -35,7 +35,7 @@ export const oasBuilder = OpenApiSpecificationBuilder.create(schemasComponent, {
 .add('paths', o => ({
   '/template': {
     get: {
-      operationId: 'getTemplate',
+      operationId: 'getTemplates',
       security: read,
       responses: {
         200: {description: '', content: o.jsonContent('TemplateCollection')},
@@ -43,7 +43,7 @@ export const oasBuilder = OpenApiSpecificationBuilder.create(schemasComponent, {
       }
     },
     post: {
-      operationId: 'createView',
+      operationId: 'createTemplate',
       security: write,
       requestBody: { content: o.jsonContent('Template') },
       responses: {
