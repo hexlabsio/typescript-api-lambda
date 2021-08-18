@@ -1,0 +1,14 @@
+{
+  "name": "@hexlabsio/klouds-template-sdk",
+  "version": "1.0.0",
+  "main": "dist/sdk-index.js",
+  "types": "dist/sdk-index.d.ts",
+  "author": "hexlabs",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/hexlabsio/typescript-api-lambda.git"
+  }
+}

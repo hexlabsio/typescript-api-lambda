@@ -1,33 +1,12 @@
-import {combineFilters, consoleLoggingFilter, Filter} from "@hexlabs/apigateway-ts";
-import Environment from "@hexlabs/env-vars-ts";
-import { Handler} from "aws-lambda";
+import {defineEnvironmentFromProcess} from "@hexlabs/env-vars-ts";
+import {allFilters} from "@hexlabs/http-api-ts";
+import {APIGatewayProxyEvent, APIGatewayProxyResult, Handler} from "aws-lambda";
 import {TemplateApi} from "./template-api";
 
 
-type TemplateEnvs = {
-  HOST: string;
-  BASE_PATH: string;
-}
-
-const environment = Environment.fromProcess<TemplateEnvs>(
-  {
-    requiredDefaults: {
-      HOST: undefined,
-      BASE_PATH: undefined
-    }
-  }
-);
-
-const jsonContentType: Filter = next => async event => {
-  const response = await next(event);
-  return {
-    ...response,
-    headers: { ...response.headers, 'Content-Type': 'application/json' }
-  }
-}
+const {environment} = defineEnvironmentFromProcess(['HOST', 'BASE_PATH', 'ALLOWED_ORIGIN'] as const, []);
 
 export const handler: Handler = async event => {
-  environment.printEnvironment();
-  const handler = new TemplateApi();
-  return combineFilters([consoleLoggingFilter, jsonContentType])!(handler.handle)(event);
+  const handler = new TemplateApi(environment.HOST, environment.BASE_PATH);
+  return allFilters<APIGatewayProxyEvent, APIGatewayProxyResult>(handler.version, {origins: [environment.ALLOWED_ORIGIN], headers: '*', methods: '*'})(handler.handle)(event);
 };

@@ -13,11 +13,6 @@ module.exports = {
                 test: /\.tsx?$/,
                 use: 'ts-loader',
                 exclude: /node_modules/,
-            },
-            {
-                test: /\.json$/,
-                use: 'json-loader',
-                exclude: /node_modules/,
             }
         ]
     },
