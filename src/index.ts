@@ -11,5 +11,5 @@ const {environment} = defineEnvironmentFromProcess(['HOST', 'BASE_PATH', 'ALLOWE
 export const handler: Handler = async event => {
   const service = new TemplateService(environment.TEMPLATE_TABLE, new DynamoDB.DocumentClient());
   const handler = new TemplateApi(environment.HOST, environment.BASE_PATH, service);
-  return allFilters<APIGatewayProxyEvent, APIGatewayProxyResult>(handler.version, {origins: [environment.ALLOWED_ORIGIN], headers: '*', methods: '*'})(handler.handle)(event);
+  return allFilters<APIGatewayProxyEvent, APIGatewayProxyResult>(handler.version, {origins: [environment.ALLOWED_ORIGIN], headers: '*', methods: '*'})(handler.routes())(event);
 };
